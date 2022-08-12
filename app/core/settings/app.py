@@ -1,8 +1,8 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from app.core.settings.base import BaseAppSettings
 
-from pydantic import PostgresDsn, SecretStr
+from pydantic import PostgresDsn, SecretStr, validator
 
 class AppSettings(BaseAppSettings):
     debug: bool = False
@@ -15,14 +15,32 @@ class AppSettings(BaseAppSettings):
 
     api_prefix_v1 : str = "/api/v1"
 
-    database_url: PostgresDsn
+    
     max_connection_count: int = 10
     min_connection_count: int = 10
 
     secret_key: SecretStr
 
+    postgres_server: str
+    postgres_user: str
+    postgres_password: str
+    postgres_db: str
+
+    database_url: Optional[PostgresDsn] = None
+
+    @validator("database_url", pre=True)
+    def validate_database_url(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+        return PostgresDsn.build(
+            scheme = "postgresql",
+            user = values.get('postgres_user'),
+            password = values.get('postgres_password'),
+            host = values.get('postgres_server'),
+            path = f"/{values.get('postgres_db')}",
+        )
+
     class Config:
         validate_assignment = True
+    
     @property
     def fastapi_kwargs(self) -> Dict[str, Any]:
         return {

@@ -1,1 +1,1 @@
-from .producto import ProductoCreate, ProductoUpdate
+from .producto import ProductoCreate, ProductoUpdate, ProductoInDBBase
