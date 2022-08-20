@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 
-from app.api import dependencies
+from app.api.api_v1.dependencies import dependencies
 from app import schemas
 from app.services import CRUD
 router = APIRouter()

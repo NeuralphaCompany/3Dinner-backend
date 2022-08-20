@@ -3,7 +3,6 @@ from fastapi import FastAPI
 
 from app.api.api_v1.router import api_route
 from app.core.config import get_app_settings
-from app.db.base_class import Base
 
 from app.db.session import SessionLocal
 from app.db.init_db import init_db
