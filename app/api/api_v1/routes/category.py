@@ -6,15 +6,15 @@ from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 
-from app.api.api_v1.dependencies import dependencies
+from app.api.api_v1.dependencies import db
 from app import schemas
-from app.services import CRUD
+from app.services import crud
 router = APIRouter()
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create_category(
     *,
-    db: Session = Depends(dependencies.get_db),
+    db: Session = Depends(db.get_db),
     category: schemas.CategoryCreate
 ) -> Any:
     """
@@ -25,14 +25,14 @@ def create_category(
         return: CategoryINDB
     
     """
-    db_category = CRUD.categoria.create(db=db, obj_in=category)
+    db_category = crud.categoria.create(db=db, obj_in=category)
     return db_category
 
 
 @router.get("/", status_code = 200)
 def read_categories(
     *,
-    db: Session = Depends(dependencies.get_db),
+    db: Session = Depends(db.get_db),
     skip: int = 0,
     limit: int = 100,
 ) -> Any:
@@ -45,7 +45,7 @@ def read_categories(
     
     """
 
-    db_category = jsonable_encoder(CRUD.categoria.get_multi(db=db, skip=skip, limit=limit))
+    db_category = jsonable_encoder(crud.categoria.get_multi(db=db, skip=skip, limit=limit))
     return JSONResponse(status_code=status.HTTP_200_OK, content={
         'count': len(db_category),
         'next': f'http://localhost:8000/api/v1/category?skip={skip+limit}&limit={limit}',
@@ -57,7 +57,7 @@ def read_categories(
 @router.get("/{category_id}", status_code = 200)
 def read_category(
     *,
-    db: Session = Depends(dependencies.get_db),
+    db: Session = Depends(db.get_db),
     category_id: int,
 ) -> Any:
     """
@@ -69,7 +69,7 @@ def read_category(
     
     """
 
-    db_category = CRUD.categoria.get(db=db, id=category_id)
+    db_category = crud.categoria.get(db=db, id=category_id)
 
     if db_category is None:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={
@@ -82,7 +82,7 @@ def read_category(
 @router.put("/{category_id}", status_code = 200)
 def update_category(
     *,
-    db: Session = Depends(dependencies.get_db),
+    db: Session = Depends(db.get_db),
     category_id: int,
     category: schemas.CategoryUpdate
 ) -> Any:
@@ -95,20 +95,20 @@ def update_category(
     
     """
 
-    db_obj = CRUD.categoria.get(db=db, id=category_id)
+    db_obj = crud.categoria.get(db=db, id=category_id)
 
     if db_obj is None:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={
             'detail': 'Not found'
         })
-    db_category = CRUD.categoria.update(db=db, id=category_id, obj_in=category)
+    db_category = crud.categoria.update(db=db, id=category_id, obj_in=category)
     return db_category
 
 
 @router.delete("/{category_id}", status_code = 200)
 def delete_category(
     *,
-    db: Session = Depends(dependencies.get_db),
+    db: Session = Depends(db.get_db),
     category_id: int,
 ) -> Any:
     """
@@ -120,11 +120,36 @@ def delete_category(
     
     """
 
-    db_obj = CRUD.categoria.get(db=db, id=category_id)
+    db_obj = crud.categoria.get(db=db, id=category_id)
 
     if db_obj is None:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={
             'detail': 'Not found'
         })
-    db_category = CRUD.categoria.delete(db=db, id=category_id)
+    db_category = crud.categoria.delete(db=db, id=category_id)
     return db_category
+
+@router.get("/{category_id}/products", status_code = 200)
+def read_products(
+    *,
+    db: Session = Depends(db.get_db),
+    category_id: int,
+    skip: int = 0,
+    limit: int = 100,
+) -> Any:
+    """
+    Endpoint to read all products of a category.
+    
+        params: category_id: int, skip: int, limit: int
+    
+        return: List[ProductoINDB]
+    
+    """
+
+    db_product = jsonable_encoder(crud.producto.get_multi_by_category(db=db, skip=skip, limit=limit, category_id=category_id))
+    return JSONResponse(status_code=status.HTTP_200_OK, content={
+        'count': len(db_product),
+        'next': f'http://localhost:8000/api/v1/category/{category_id}/products?skip={skip+limit}&limit={limit}',
+        'previous': None if skip == 0 else f'http://localhost:8000/api/v1/category/{category_id}/products?skip={skip-limit}&limit={limit}',
+        'results': db_product
+    })
