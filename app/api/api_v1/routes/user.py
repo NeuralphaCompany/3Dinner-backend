@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 
-from app.api.api_v1.dependencies import db
+from app.api.dependencies import db
 
 from app import schemas
 from app.services import crud

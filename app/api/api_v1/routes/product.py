@@ -7,10 +7,11 @@ from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 
-from app.api.api_v1.dependencies import db
-
-from app import schemas
+from app.api.dependencies import db
+from app import models, schemas
 from app.services import crud
+from app.api.dependencies import jwt_bearer
+
 router = APIRouter()
 
 @router.post("/",
@@ -19,6 +20,7 @@ router = APIRouter()
 def create_product(
     *,
     db: Session = Depends(db.get_db),
+    current_employee: models.Employee= Depends(jwt_bearer.get_current_active_employee),
     producto: schemas.ProductoCreate
 ) -> Any:
     """
@@ -100,7 +102,7 @@ def update_product(
             'detail': 'Product not found'
         })
     else:
-        db_product = crud.producto.update(db=db, db_obj=crud.producto.get(db=db, id=product_id), obj_in=producto)
+        db_product = crud.producto.update(db=db, db_obj=db_obj, obj_in=producto)
         return db_product
 
 

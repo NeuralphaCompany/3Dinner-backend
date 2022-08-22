@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 
-from app.api.api_v1.dependencies import db
+from app.api.dependencies import db, jwt_bearer
 from app import schemas
 from app.services import crud
 router = APIRouter()
@@ -15,7 +15,8 @@ router = APIRouter()
 def create_category(
     *,
     db: Session = Depends(db.get_db),
-    category: schemas.CategoryCreate
+    category: schemas.CategoryCreate,
+    current_employee: schemas.Employee = Depends(jwt_bearer.get_current_active_employee),
 ) -> Any:
     """
     Endpoint to create a new category.

@@ -68,3 +68,5 @@ class ProductoInDBBase(ProductoCreate):
     class config:
         orm_mode = True
     
+class Producto(ProductoInDBBase):
+    pass

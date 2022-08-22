@@ -15,6 +15,8 @@ class AppSettings(BaseAppSettings):
 
     api_prefix_v1 : str = "/api/v1"
 
+    access_token_expires_minutes : int
+
     
     max_connection_count: int = 10
     min_connection_count: int = 10
@@ -28,6 +30,8 @@ class AppSettings(BaseAppSettings):
 
     database_url: Optional[PostgresDsn] = None
 
+    algorithm: str 
+
     @validator("database_url", pre=True)
     def validate_database_url(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
         return PostgresDsn.build(
@@ -40,6 +44,7 @@ class AppSettings(BaseAppSettings):
 
     class Config:
         validate_assignment = True
+        env_file_encoding = 'utf-8'
     
     @property
     def fastapi_kwargs(self) -> Dict[str, Any]:

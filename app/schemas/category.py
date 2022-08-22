@@ -13,3 +13,5 @@ class CategoryInDBBase(CategoryCreate):
     id: int = Field(..., description="ID de la categoría", example=1, gt=0)
     class Config:
         orm_mode = True
+class Category(CategoryInDBBase):
+    pass
