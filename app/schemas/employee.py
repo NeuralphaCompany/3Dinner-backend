@@ -1,7 +1,9 @@
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, root_validator
+from pydantic import BaseModel, EmailStr, root_validator, SecretStr
 from datetime import datetime
+
+from app.schemas.multi_response import multi_response
 
 class EmployeeBase(BaseModel):
     email: Optional[EmailStr]
@@ -32,4 +34,8 @@ class Employee(EmployeeInDBBase):
     pass
 
 class EmployeeInDB(EmployeeInDBBase):
-    hashed_password: str
+    hashed_password: SecretStr
+
+
+class EmployeesResponse(multi_response[EmployeeInDB]):
+    pass

@@ -29,7 +29,7 @@ def create_employee(
     db_employee = crud.employee.create(db=db, obj_in=employee)
     return db_employee
 
-@router.get("/", status_code = 200)
+@router.get("/", status_code = 200, response_model=List[schemas.Employee])
 def read_employees(
     *,
     db: Session = Depends(db.get_db),
@@ -42,20 +42,27 @@ def read_employees(
         params: skip: int, limit: int
     """
 
-    db_employee = jsonable_encoder(crud.employee.get_multi(db=db, skip=skip, limit=limit))
-    return JSONResponse(status_code=status.HTTP_200_OK, content={
-        'count': len(db_employee),
-        'next': f'http://localhost:8000/api/v1/employee?skip={skip+limit}&limit={limit}',
-        'previous': None if skip == 0 else f'http://localhost:8000/api/v1/employee?skip={skip-limit}&limit={limit}',
-        'results': db_employee
-    })
+    db_employee = crud.employee.get_multi(db=db, skip=skip, limit=limit)
+    # results = schemas.EmployeesResponse(
+    #     count = 1,
+    #     next = 'asfddsafads',
+    #     previous = 'dasfadsf',
+    #     results = db_employee
+    # )
+    return db_employee
+    # return JSONResponse(status_code=status.HTTP_200_OK, content={
+    #     'count': len(db_employee),
+    #     'next': f'http://localhost:8000/api/v1/employee?skip={skip+limit}&limit={limit}',
+    #     'previous': None if skip == 0 else f'http://localhost:8000/api/v1/employee?skip={skip-limit}&limit={limit}',
+    #     'results': db_employee
+    # })
 
-@router.get("/{id}", status_code = 200)
+@router.get("/{id}", status_code = 200, response_model=schemas.Employee)
 def read_employee(
     *,
     db: Session = Depends(db.get_db),
     id: int,
-) -> Any:
+) -> schemas.Employee:
     """
     Endpoint to read an employee.
 

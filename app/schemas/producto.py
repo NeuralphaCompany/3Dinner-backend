@@ -4,6 +4,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
+from app.schemas.multi_response import multi_response
+
 
 class ProductoCreate(BaseModel):
     name: str = Field(
@@ -69,4 +71,7 @@ class ProductoInDBBase(ProductoCreate):
         orm_mode = True
     
 class Producto(ProductoInDBBase):
+    pass
+
+class ProductsResponse(multi_response[ProductoInDBBase]):
     pass
