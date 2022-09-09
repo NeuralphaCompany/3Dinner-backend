@@ -14,13 +14,15 @@ from app.api.dependencies import jwt_bearer
 
 router = APIRouter()
 
+
 @router.post("/",
-    status_code = 201,
-)
+             status_code=201,
+             )
 def create_product(
     *,
     db: Session = Depends(db.get_db),
-    current_employee: models.Employee= Depends(jwt_bearer.get_current_active_employee),
+    current_employee: schemas.Employee = Depends(
+        jwt_bearer.get_current_active_employee),
     producto: schemas.ProductoCreate
 ) -> Any:
     """
@@ -35,7 +37,7 @@ def create_product(
     return db_product
 
 
-@router.get("/", status_code = 200)
+@router.get("/", status_code=200)
 def read_products(
     *,
     db: Session = Depends(db.get_db),
@@ -51,7 +53,8 @@ def read_products(
 
     """
 
-    db_product = jsonable_encoder(crud.producto.get_multi(db=db, skip=skip, limit=limit))
+    db_product = jsonable_encoder(
+        crud.producto.get_multi(db=db, skip=skip, limit=limit))
     return JSONResponse(status_code=status.HTTP_200_OK, content={
         'count': len(db_product),
         'next': f'http://localhost:8000/api/v1/product?skip={skip+limit}&limit={limit}',
@@ -60,7 +63,7 @@ def read_products(
     })
 
 
-@router.get("/{product_id}", status_code = 200)
+@router.get("/{product_id}", status_code=200)
 def read_product(
     *,
     db: Session = Depends(db.get_db),
@@ -79,10 +82,12 @@ def read_product(
     return db_product
 
 
-@router.put("/{product_id}", status_code = 200)
+@router.put("/{product_id}", status_code=200)
 def update_product(
     *,
     db: Session = Depends(db.get_db),
+    current_employee: schemas.Employee = Depends(
+        jwt_bearer.get_current_active_employee),
     product_id: int,
     producto: schemas.ProductoUpdate,
 ) -> Any:
@@ -102,14 +107,17 @@ def update_product(
             'detail': 'Product not found'
         })
     else:
-        db_product = crud.producto.update(db=db, db_obj=db_obj, obj_in=producto)
+        db_product = crud.producto.update(
+            db=db, db_obj=db_obj, obj_in=producto)
         return db_product
 
 
-@router.delete("/{id}", status_code = status.HTTP_200_OK)
+@router.delete("/{id}", status_code=status.HTTP_200_OK)
 def delete_product(
     *,
     db: Session = Depends(db.get_db),
+    current_employee: schemas.Employee = Depends(
+        jwt_bearer.get_current_active_employee),
     id: int,
 
 ) -> Any:
@@ -123,10 +131,9 @@ def delete_product(
     """
     db_product = crud.producto.get(db=db, id=id)
     if not db_product:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
     db_product = crud.producto.delete(db=db, id=id)
     return JSONResponse(status_code=status.HTTP_200_OK, content={
         'detail': 'Product deleted'
     })
-        
-    

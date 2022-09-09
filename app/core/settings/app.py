@@ -28,6 +28,10 @@ class AppSettings(BaseAppSettings):
     postgres_password: str
     postgres_db: str
 
+    first_superemployee_email : str
+    first_superemployee_password : str
+    first_superemployee_name : str
+
     database_url: Optional[PostgresDsn] = None
 
     algorithm: str 

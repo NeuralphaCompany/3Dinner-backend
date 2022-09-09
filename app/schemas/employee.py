@@ -1,13 +1,14 @@
 from typing import Optional
+from datetime import datetime
+
 
 from pydantic import BaseModel, EmailStr, root_validator, SecretStr
-from datetime import datetime
 
 from app.schemas.multi_response import multi_response
 
 class EmployeeBase(BaseModel):
     email: Optional[EmailStr]
-    is_active: Optional[bool] =True
+    is_active: Optional[bool] = True
     name: str
     cellphone: Optional[str]
     created_at: Optional[datetime]

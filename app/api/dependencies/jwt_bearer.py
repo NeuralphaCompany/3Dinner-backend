@@ -47,3 +47,11 @@ def get_current_active_employee(
     if not crud.employee.is_active(db=db, user=current_employee):
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_employee
+
+def get_current_active_superemployee(
+    db: Session = Depends(get_db),
+    current_employee: models.Employee = Depends(get_current_active_employee)
+) -> models.Employee:
+    if not crud.employee.is_superuser(db= db, user=current_employee):
+        return HTTPException(status_code = status.HTTP_403_FORBIDDEN, detail = "Not a superuser")
+    return current_employee

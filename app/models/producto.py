@@ -17,5 +17,6 @@ class Producto(Base):
     image = Column(String(1000), nullable=True)
     image_galery = Column(JSON, nullable=True)
     ingredients = Column(JSON, nullable=True)
+    BaseIVA = Column(Integer, nullable=True, default=0)
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship("Category", back_populates="products")
