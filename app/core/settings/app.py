@@ -44,7 +44,6 @@ class AppSettings(BaseAppSettings):
             password = values.get('postgres_password'),
             host = values.get('postgres_server'),
             path = f"/{values.get('postgres_db')}",
-            port = None
         )
 
     class Config:
