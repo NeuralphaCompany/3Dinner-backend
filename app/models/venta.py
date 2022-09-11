@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, JSON, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
-from app.db.base_class import Base
+from app.services.db.base_class import Base
 
 if TYPE_CHECKING:
     from .user import User

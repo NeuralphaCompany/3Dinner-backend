@@ -4,8 +4,8 @@ from fastapi import FastAPI
 from app.api.api_v1.router import api_route
 from app.core.config import get_app_settings
 
-from app.db.session import SessionLocal
-from app.db.init_db import init_db
+from app.services.db.session import SessionLocal
+from app.services.db.init_db import init_db
 
 db = SessionLocal()
 

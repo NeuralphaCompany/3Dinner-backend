@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import Column, Integer, String, JSON, ForeignKey
 from sqlalchemy.orm import relationship
 
-from app.db.base_class import Base
+from app.services.db.base_class import Base
 
 if TYPE_CHECKING:
     from .category import Category

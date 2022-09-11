@@ -11,7 +11,7 @@ from app.services import crud
 from app import models, schemas
 from app.core import security
 from app.core.config import get_app_settings
-from app.db.session import SessionLocal
+from app.services.db.session import SessionLocal
 from .db import get_db
 
 settings = get_app_settings()

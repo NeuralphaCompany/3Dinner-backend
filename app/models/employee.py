@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.sql import func
 
-from app.db.base_class import Base
+from app.services.db.base_class import Base
 
 class Employee(Base):
     id = Column(Integer, primary_key=True)
